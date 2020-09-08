@@ -6,6 +6,7 @@ use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 
 class ProfileTest extends TestCase
 {
@@ -37,18 +38,19 @@ class ProfileTest extends TestCase
     */
     public function update_displays_validation_errors()
     {
-        $this->withOutExceptionHandling();
+        $this->withExceptionHandling();
         $user = $this->siginIn();
         $response = $this->patch($user->path(), []);
-        dd($response);
+        $response->assertSessionHasErrors();
         $response->assertStatus(302);
-        $response->assertSessionHasErrors('email');
+
     }
     /**
      * @test
      */
     public function it_can_update_profile()
     {
+
         $user = $this->siginIn();
         $data=[
             'username' => 'test95',
@@ -57,7 +59,6 @@ class ProfileTest extends TestCase
             'email' => $user->email,
             'password' => 'password',
             'password_confirmation' => 'password',
-
         ];
         $this->patch($user->path(),$data);
         $this->assertTrue($user->fresh()->name == 'he7my');

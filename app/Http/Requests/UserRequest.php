@@ -23,10 +23,11 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
-            'username' => ['required', 'string', 'max:255',Rule::unique('users', 'username')->ignore($this->user->id,'id'),'alpha_dash'],
+            'username' => ['required', 'string', 'max:255',Rule::unique('users', 'username')->ignore($this->user->username,'username'),'alpha_dash'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->id,'id')],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->email,'email')],
             'avatar' => ['nullable','file'],
             'password' => ['required', 'string', 'min:8','confirmed'],
 

@@ -20,7 +20,7 @@ class TweetTest extends TestCase
         $this->withOutExceptionHandling();
         $user = $this->siginIn();
         $tweet = factory(Tweet::class)->create(['user_id' => $user->id]);
-        $this->get('/home')
+        $this->get(route('tweets.index'))
             ->assertStatus(200)
             ->assertSee($tweet->body);
 
@@ -29,8 +29,8 @@ class TweetTest extends TestCase
     * @test
     */
 
-     public function it_can_add_tweet()
-     {
+    public function it_can_add_tweet()
+    {
         $this->withOutExceptionHandling();
         $user = $this->siginIn();
         $this->post('tweets',[
@@ -41,5 +41,39 @@ class TweetTest extends TestCase
             'user_id' => $user->id,
             'body' => 'test add tweet'
         ]);
-     }
+    }
+
+    /**
+     * @test
+    */
+    public function it_can_like_tweet()
+    {
+        $this->withOutExceptionHandling();
+        $user = $this->siginIn();
+        $tweet = factory(Tweet::class)->create();
+
+        $this->post('/tweets/'.$tweet->id.'/like');
+        $this->assertDatabaseHas('likes',[
+            'user_id' => $user->id,
+            'tweet_id' => $tweet->id,
+            'liked' => true
+        ]);
+    }
+
+    /**
+     * @test
+    */
+    public function it_can_unLike_tweet()
+    {
+        $this->withOutExceptionHandling();
+        $user = $this->siginIn();
+        $tweet = factory(Tweet::class)->create();
+
+        $this->delete('/tweets/'.$tweet->id.'/like');
+        $this->assertDatabaseHas('likes',[
+            'user_id' => $user->id,
+            'tweet_id' => $tweet->id,
+            'liked' => false
+        ]);
+    }
 }
