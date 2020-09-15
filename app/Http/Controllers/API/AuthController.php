@@ -4,22 +4,18 @@ namespace App\Http\Controllers\API;
 
 use App\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        $validatedData = $request->validate([
-            'username' => ['required', 'string', 'max:255','unique:users','alpha_dash'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        $data = $request->validated();
+        $data['password'] = bcrypt($request->password);
 
-        $validatedData['password'] = bcrypt($request->password);
-
-        $user = User::create($validatedData);
+        $user = User::create($data);
 
         $accessToken = $user->createToken('authToken')->accessToken;
 

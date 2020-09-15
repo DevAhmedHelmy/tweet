@@ -25,9 +25,9 @@ class UserRequest extends FormRequest
     {
 
         return [
-            'username' => ['required', 'string', 'max:255',Rule::unique('users', 'username')->ignore($this->user->username,'username'),'alpha_dash'],
+            'username' => $this->method('post') ? ['required', 'string', 'max:255',Rule::unique('users', 'username'),'alpha_dash'] : ['required', 'string', 'max:255',Rule::unique('users', 'username')->ignore($this->user->username,'username'),'alpha_dash'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->email,'email')],
+            'email' => $this->method('post') ?['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')] : ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->email,'email')],
             'avatar' => ['nullable','file'],
             'password' => ['required', 'string', 'min:8','confirmed'],
 
