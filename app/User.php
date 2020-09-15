@@ -3,14 +3,15 @@
 namespace App;
 
 use App\Traits\Followable;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
-    use Notifiable, Followable;
+    use HasApiTokens, Notifiable, Followable;
 
     /**
      * The attributes that are mass assignable.

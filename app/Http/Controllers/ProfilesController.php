@@ -24,12 +24,15 @@ class ProfilesController extends Controller
 
     public function update(UserRequest $request, User $user)
     {
+
         $data = $request->validated();
         if(isset($data['avatar']))
         {
             $data['avatar'] = $data['avatar']->store('avatars');
         }
+
         $user->update($data);
+
         return redirect($user->path())->with('message', 'Saved');
 
     }

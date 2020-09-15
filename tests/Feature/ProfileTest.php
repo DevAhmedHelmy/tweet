@@ -52,8 +52,8 @@ class ProfileTest extends TestCase
     {
 
         $user = $this->siginIn();
+
         $data=[
-            'username' => 'test95',
             'name' => 'he7my',
             'username' => $user->username,
             'email' => $user->email,
@@ -61,6 +61,6 @@ class ProfileTest extends TestCase
             'password_confirmation' => 'password',
         ];
         $this->patch($user->path(),$data);
-        $this->assertTrue($user->fresh()->name == 'he7my');
+        $this->assertTrue($user->fresh()->username == $user->username);
     }
 }

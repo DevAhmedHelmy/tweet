@@ -23,7 +23,6 @@ class TweetTest extends TestCase
         $this->get(route('tweets.index'))
             ->assertStatus(200)
             ->assertSee($tweet->body);
-
     }
     /**
     * @test
