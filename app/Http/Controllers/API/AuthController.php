@@ -13,7 +13,7 @@ class AuthController extends Controller
     public function register(UserRequest $request)
     {
         $data = $request->validated();
-        $data['password'] = bcrypt($request->password);
+        // $data['password'] = bcrypt($request->password);
 
         $user = User::create($data);
 
@@ -24,12 +24,16 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $loginData = $request->validate([
-            'email' => 'email|required',
-            'password' => 'required'
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+            'remember_me' => 'boolean'
         ]);
 
-        if (!auth()->attempt($loginData)) {
+
+        $credentials = request(['email', 'password']);
+
+        if (!auth()->attempt($credentials)) {
             return response(['message' => 'Invalid Credentials']);
         }
 
