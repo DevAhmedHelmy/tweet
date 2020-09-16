@@ -8,15 +8,13 @@ use Tests\TestCase;
 
 class ExploreTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+    /*
+    * @return void
+    */
     public function testExample()
     {
-        $response = $this->get('/');
-
+        $this->siginIn();
+        $response = $this->get('/explore');
         $response->assertStatus(200);
     }
 }

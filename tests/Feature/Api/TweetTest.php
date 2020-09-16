@@ -1,23 +1,21 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 use App\Tweet;
-use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TweetTest extends TestCase
 {
     use RefreshDatabase;
     /**
-     * A basic test example.
      *@test
-     * @return void
      */
     public function it_show_tweets_in_home()
     {
-        $user = $this->siginIn();
+        $user = $this->apiSiginIn();
         $tweet = factory(Tweet::class)->create(['user_id' => $user->id]);
         $this->get(route('tweets.index'))
             ->assertStatus(200)
@@ -29,7 +27,7 @@ class TweetTest extends TestCase
 
     public function it_can_add_tweet()
     {
-        $user = $this->siginIn();
+        $user = $this->apiSiginIn();
         $this->post('tweets',[
             'user_id' => $user->id,
             'body' => 'test add tweet'
@@ -45,7 +43,7 @@ class TweetTest extends TestCase
     */
     public function it_can_like_tweet()
     {
-        $user = $this->siginIn();
+        $user = $this->apiSiginIn();
         $tweet = factory(Tweet::class)->create();
 
         $this->post('/tweets/'.$tweet->id.'/like');
@@ -61,7 +59,7 @@ class TweetTest extends TestCase
     */
     public function it_can_unLike_tweet()
     {
-        $user = $this->siginIn();
+        $user = $this->apiSiginIn();
         $tweet = factory(Tweet::class)->create();
 
         $this->delete('/tweets/'.$tweet->id.'/like');

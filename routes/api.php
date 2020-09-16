@@ -18,13 +18,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/explore', 'API\ExploreController');
-Route::apiResource('/tweets','API\TweetController');
+Route::group(['middleware' => ['auth:api']], function () {
+    Route::get('/explore', 'API\ExploreController');
+    Route::apiResource('/tweets','API\TweetController');
+});
 
-// Route::post('/register', 'API\AuthController@register');
-// Route::post('/login', 'API\AuthController@login');
 Route::group(['prefix'=>'auth'],function (){
     Route::post('/register', 'API\AuthController@register');
     Route::post('/login', 'API\AuthController@login');
 
-    });
+});
