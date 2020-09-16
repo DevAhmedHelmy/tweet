@@ -18,7 +18,7 @@ class TweetController extends Controller
     public function index()
     {
         $tweets = TweetResource::collection(auth()->user()->timeline());
-        return Response(['tweets' => $tweets],200);
+        return response(['tweets' => $tweets],200);
     }
 
     public function store(TweetRequest $request)

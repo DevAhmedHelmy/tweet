@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\Api;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthenticationTest extends TestCase
 {
@@ -73,7 +74,7 @@ class AuthenticationTest extends TestCase
                     "email" ,
                     "updated_at" ,
                     "created_at" ,
-                    "id" 
+                    "id"
                 ],
                 "access_token",
                 "message"
@@ -105,14 +106,20 @@ class AuthenticationTest extends TestCase
      */
     public function successful_login()
     {
-        $this->withoutExceptionHandling();
-        $userData = [ 
-            "email" => "doe@example.com" ,
+        User::create([
+            "name" => "John Doe",
+            "email" => "doe@example.com",
+            'username' => 'ahmed',
             "password" => "demo12345",
+            "password_confirmation" => "demo12345"
+        ]);
+        $userData = [
+            "email" => "doe@example.com" ,
+            "password" => "demo12345"
         ];
 
-        $this->json('POST', 'api/auth/login', $userData, ['Accept' => 'application/json'])
-            ->assertStatus(201)
+        $response = $this->json('POST', 'api/auth/login', $userData, ['Accept' => 'application/json'])
+            ->assertStatus(200)
             ->assertJsonStructure([
                 "user" => [
                     "username" ,
@@ -120,10 +127,13 @@ class AuthenticationTest extends TestCase
                     "email" ,
                     "updated_at" ,
                     "created_at" ,
-                    "id" 
+                    "id"
                 ],
                 "access_token",
                 "message"
             ]);
+        $this->assertArrayHasKey('access_token',$response->json());
     }
+
+
 }

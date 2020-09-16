@@ -15,11 +15,15 @@ class TweetTest extends TestCase
      */
     public function it_show_tweets_in_home()
     {
+        $this->withoutExceptionHandling();
         $user = $this->apiSiginIn();
         $tweet = factory(Tweet::class)->create(['user_id' => $user->id]);
-        $this->get(route('tweets.index'))
+        $this->json('get', 'api/tweets', ['Accept' => 'application/json'])
             ->assertStatus(200)
-            ->assertSee($tweet->body);
+            ->assertJsonStructure([
+                "tweets" => ["body" ]
+            ]);
+
     }
     /**
     * @test
