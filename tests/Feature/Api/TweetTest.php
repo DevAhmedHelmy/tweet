@@ -19,29 +19,49 @@ class TweetTest extends TestCase
         $user = $this->apiSiginIn();
         $tweet = factory(Tweet::class)->create(['user_id' => $user->id]);
         $this->json('get', 'api/tweets', ['Accept' => 'application/json'])
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                "tweets" => ["body" ]
-            ]);
+            ->assertStatus(200);
 
     }
     /**
-    * @test
-    */
-
+     * @test
+     *
+     * @return void
+     */
+    public function required_fields_for_add_tweet()
+    {
+        $this->withoutExceptionHandling();
+        $user = $this->apiSiginIn();
+        $this->json('POST', 'api/tweets', ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJson([
+                "message" => "The given data was invalid.",
+                "errors" => [
+                    "body" => ["The body field is required."]
+                ]
+            ]);
+    }
+    /**
+     * @test
+     *
+     * @return void
+     */
     public function it_can_add_tweet()
     {
-        $user = $this->apiSiginIn();
-        $this->post('tweets',[
-            'user_id' => $user->id,
-            'body' => 'test add tweet'
-        ]);
-        $this->assertDatabaseHas('tweets',[
-            'user_id' => $user->id,
-            'body' => 'test add tweet'
-        ]);
-    }
 
+        $user = $this->apiSiginIn();
+        $tweet = [
+            'user_id' => $user->id,
+            'body' => 'test add tweet'
+        ];
+        $this->json('POST', 'api/tweets', $tweet, ['Accept' => 'application/json'])
+            ->assertStatus(201)
+            ->assertJsonStructure([
+                "tweet" => [
+                    "body"
+                ],
+                "message"
+            ]);
+    }
     /**
      * @test
     */
@@ -49,7 +69,14 @@ class TweetTest extends TestCase
     {
         $user = $this->apiSiginIn();
         $tweet = factory(Tweet::class)->create();
-
+        $this->json('POST', 'api/tweets/'.$tweet->id . '/like', ['Accept' => 'application/json'])
+            ->assertStatus(201)
+            ->assertJsonStructure([
+                "tweet" => [
+                    "body"
+                ],
+                "message"
+            ]);
         $this->post('/tweets/'.$tweet->id.'/like');
         $this->assertDatabaseHas('likes',[
             'user_id' => $user->id,

@@ -25,7 +25,8 @@ class TweetController extends Controller
     {
 
         $data = $request->validated();
-        auth()->user()->tweets()->create($data);
-        return Response(['message' => "saved"],201);
+
+        $tweet = auth()->user()->tweets()->create($data);
+        return Response(['message' => "saved", 'tweet' => $tweet],201);
     }
 }
